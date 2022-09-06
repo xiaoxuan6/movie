@@ -38,8 +38,11 @@ tk.Label(root, text='更多网站').grid(row=7, column=0)
 
 def get_urls():
     try:
+        header = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:103.0) Gecko/20100101 Firefox/103.0'
+        }
         url = os.environ.get('APP_URL')
-        content = requests.get(url).text
+        content = requests.get(url=url, headers=header).text
         items = json.loads(content.replace('var dh_data = ', ''))[6]['item']
 
         urls = []
@@ -47,7 +50,8 @@ def get_urls():
             urls.append(item['url'])
 
         return urls
-    except:
+    except Exception as e:
+        print(e)
         return []
 
 
