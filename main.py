@@ -114,7 +114,13 @@ def openWeb():
 
 tk.Label(root).grid(row=9, column=0)
 
-tk.Label(root).grid(row=10, column=0)
+
+def click_github():
+    webbrowser.open('https://github.com/xiaoxuan6/movie')
+    root.destroy()
+
+
+tk.Button(root, text="源码地址", font=20, width=10, command=click_github).grid(row=10, column=0)
 tk.Button(root, text='解析', font=12, width=20, command=openWeb).grid(row=10, column=1)
 
-tk.mainloop()
+root.mainloop()
