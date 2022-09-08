@@ -12,7 +12,8 @@ header = {
 }
 
 
-def crawling(keyword: str, num: int):
+
+def crawling(keyword: str, num: str):
     content = re.get(f'{domian}/search?q={keyword}', headers=header).text
     tree = etree.HTML(content)
 
@@ -31,7 +32,7 @@ def crawling(keyword: str, num: int):
     return get_anthology_url(item[0], num)
 
 
-def get_anthology_url(url: str, num: int):
+def get_anthology_url(url: str, num: str):
     html_data = re.get(url, headers=header).text
     sub_tree = etree.HTML(html_data)
 
