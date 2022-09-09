@@ -144,5 +144,6 @@ class AbortFrame(tk.Frame):
         tk.Label(self, text='版权所有:').grid(row=5, column=0)
         tk.Label(self, text='晓轩').grid(row=5, column=1, sticky='w')
 
-    def openUrl(self):
+    @staticmethod
+    def openUrl():
         webbrowser.open(url='https://github.com/xiaoxuan6/movie')
