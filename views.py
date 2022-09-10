@@ -1,5 +1,4 @@
 import os
-import sys
 import tkinter as tk
 import webbrowser
 from tkinter import messagebox
@@ -58,9 +57,7 @@ class AllFrame(tk.Frame):
             messagebox.showerror(title='错误', message='无效的剧名')
 
         elif not num:
-            webbrowser.open(url=f'{endpoint.hzz.domian}/search?q={keyword}')
-            self.root.quit()
-            sys.exit(0)
+            messagebox.showerror(title='错误', message='无效的选集')
 
         else:
             status, response = endpoint.hzz.crawling(str(keyword), num)
@@ -70,8 +67,17 @@ class AllFrame(tk.Frame):
                 messagebox.showerror(title='错误', message=response)
 
             else:
-                webbrowser.open(response)
-                self.root.quit()
+                from urllib import parse
+                import re
+
+                try:
+                    url = parse.unquote(response)
+                    url = re.findall('play_url=(.*?)&', url)[0]
+                    webbrowser.open(url)
+                    self.root.quit()
+                except Exception as e:
+                    print(e)
+                    messagebox.showerror(title='错误', message='解析失败，请重试')
 
 
 class MoreFrame(tk.Frame):
@@ -133,7 +139,7 @@ class AbortFrame(tk.Frame):
     def __init__(self, root):
         super().__init__(root)
         tk.Label(self).grid(row=0, column=0)
-        tk.Label(self).grid(row=1, column=0)
+        # tk.Label(self).grid(row=1, column=0)
         tk.Label(self, text='关于作品:').grid(row=2, column=0)
         tk.Label(self, text='本作品由 tkinter 制作').grid(row=2, column=1, sticky='w')
         tk.Label(self, text='关于作者:').grid(row=3, column=0)

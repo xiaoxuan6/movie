@@ -12,7 +12,6 @@ header = {
 }
 
 
-
 def crawling(keyword: str, num: str):
     content = re.get(f'{domian}/search?q={keyword}', headers=header).text
     tree = etree.HTML(content)
