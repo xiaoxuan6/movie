@@ -15,7 +15,7 @@ class Movie:
         self.more_frame = MoreFrame(self.root)
         self.abort_frame = AbortFrame(self.root)
 
-        self.root.title('Vip 会员视频解析 v0.0.1')
+        self.root.title('Vip 会员视频解析 v0.0.5')
         self.root.geometry('300x200')
         self.root.resizable(width=False, height=False)
 

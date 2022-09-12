@@ -12,7 +12,7 @@ header = {
 }
 
 
-def crawling(keyword: str, num: str):
+def crawling(keyword: str):
     content = re.get(f'{domian}/search?q={keyword}', headers=header).text
     tree = etree.HTML(content)
 
@@ -27,19 +27,4 @@ def crawling(keyword: str, num: str):
     if len(item) == 0:
         return False, '搜索结果为空'
 
-    # 遍历结果筛选选集
-    return get_anthology_url(item[0], num)
-
-
-def get_anthology_url(url: str, num: str):
-    html_data = re.get(url, headers=header).text
-    sub_tree = etree.HTML(html_data)
-
-    anthology = f'第 {num} 集'
-    data = sub_tree.xpath('//div[@class="stui-pannel_bd col-pd clearfix"]/ul/li//text()')
-    if anthology in data:
-        target = sub_tree.xpath(f'//div[@class="stui-pannel_bd col-pd clearfix"]/ul/li[{num}]//@href')
-        if len(target) > 0:
-            return True, domian + target[0]
-    else:
-        return False, f'搜索结果中不包含选集{num}'
+    return True, item[0]

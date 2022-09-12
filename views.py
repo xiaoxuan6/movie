@@ -42,38 +42,32 @@ class AllFrame(tk.Frame):
         tk.Label(self, text='剧名').grid(row=1, column=1, pady=10)
         tk.Entry(self, textvariable=self.keyword).grid(row=1, column=2, pady=10)
 
-        tk.Label(self, text='选集').grid(row=2, column=1, pady=10)
-        tk.Entry(self, textvariable=self.num).grid(row=2, column=2, pady=10)
-
         tk.Button(self, text='解析', width=20, command=self.handle).grid(row=3, column=2, pady=10)
 
     def handle(self):
         import endpoint
 
-        keyword = self.keyword.get()
-        num = self.num.get()
+        messagebox.showerror(title='错误', message=os.environ.get("APP_URL"))
 
+        with open('.env', mode='r', encoding='utf-8') as f:
+            messagebox.showerror(title='错误', message=f.read())
+
+        keyword = self.keyword.get()
         if not keyword:
             messagebox.showerror(title='错误', message='无效的剧名')
 
-        elif not num:
-            messagebox.showerror(title='错误', message='无效的选集')
-
         else:
-            status, response = endpoint.hzz.crawling(str(keyword), num)
+            status, response = endpoint.hzz.crawling(str(keyword))
             if not status:
                 self.keyword.set('')
                 self.num.set('')
                 messagebox.showerror(title='错误', message=response)
 
             else:
-                from urllib import parse
                 import re
 
                 try:
-                    url = parse.unquote(response)
-                    url = re.findall('play_url=(.*?)&', url)[0]
-                    webbrowser.open(url)
+                    webbrowser.open(response)
                     self.root.quit()
                 except Exception as e:
                     print(e)
@@ -139,7 +133,6 @@ class AbortFrame(tk.Frame):
     def __init__(self, root):
         super().__init__(root)
         tk.Label(self).grid(row=0, column=0)
-        # tk.Label(self).grid(row=1, column=0)
         tk.Label(self, text='关于作品:').grid(row=2, column=0)
         tk.Label(self, text='本作品由 tkinter 制作').grid(row=2, column=1, sticky='w')
         tk.Label(self, text='关于作者:').grid(row=3, column=0)

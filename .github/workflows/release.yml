@@ -1,0 +1,117 @@
+name: "Create Release"
+
+on:
+  push:
+    tags:
+      - '*'
+
+env:
+  APP_URL: ${{ secrets.APP_URL }}
+  HZZ_URL: ${{ secrets.HZZ_URL }}
+  AIDOUER_URL: ${{ secrets.AIDOUER_URL }}
+
+jobs:
+  release-win:
+    runs-on: windows-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install Requirements
+        # 这里比较坑：$APP_URL 无法获取到值
+        # 参考链接 https://jessehouwing.net/github-actions-workflow-commands-in-cmd/
+        # https://tauri.app/v1/guides/distribution/sign-windows/#workflow-modifications
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r ./requirements.txt
+          pip install -i https://pypi.douban.com/simple/ pyinstaller
+          make put APP_URL="${{ env.APP_URL }}" AIDOUER_URL="${{ env.AIDOUER_URL }}" HZZ_URL="${{ env.HZZ_URL }}"
+          echo "cat .env"
+          cat .env
+          make put APP_URL="$env:APP_URL" AIDOUER_URL="$env:AIDOUER_URL" HZZ_URL="$env:HZZ_URL"
+          echo "cat .env"
+          cat .env
+          pyinstaller -F -w movie.py
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1.1.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+      - name: Upload Release
+        id: upload_release_asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/movie.exe
+          asset_name: movie-win.exe
+          asset_content_type: application/zip
+
+  release-macos:
+    runs-on: macos-latest
+    needs: release-win
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Run create release
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r ./requirements.txt
+          pip install -i https://pypi.douban.com/simple/ pyinstaller
+          echo APP_URL=$APP_URL > .env
+          echo HZZ_URL=$HZZ_URL >> .env
+          echo AIDOUER_URL=$AIDOUER_URL >> .env
+          pyinstaller -F -w movie.py
+          echo "cat .env"
+          cat .env
+          rm -rf .env
+      - name: Upload Release
+        id: upload_release_asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.release-win.outputs.upload_url }}
+          asset_path: ./dist/movie
+          asset_name: movie-macos
+          asset_content_type: application/zip
+
+  release-ubuntu:
+    runs-on: ubuntu-latest
+    needs: release-win
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Run create release
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r ./requirements.txt
+          pip install -i https://pypi.douban.com/simple/ pyinstaller
+          echo APP_URL=$APP_URL > .env
+          echo HZZ_URL=$HZZ_URL >> .env
+          echo AIDOUER_URL=$AIDOUER_URL >> .env
+          pyinstaller -F -w movie.py
+          echo "cat .env"
+          cat .env
+          rm -rf .env
+      - name: Upload Release
+        id: upload_release_asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.release-win.outputs.upload_url }}
+          asset_path: ./dist/movie
+          asset_name: movie-ubuntu
+          asset_content_type: application/zip
