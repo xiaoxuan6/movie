@@ -28,8 +28,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r ./requirements.txt
           pip install -i https://pypi.douban.com/simple/ pyinstaller
-          make put APP_URL="$env:APP_URL" AIDOUER_URL="$env:AIDOUER_URL" HZZ_URL="$env:HZZ_URL"
-          pyinstaller -F -w movie.py
+          make build APP_URL="$env:APP_URL" AIDOUER_URL="$env:AIDOUER_URL" HZZ_URL="$env:HZZ_URL"
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1.1.4
@@ -62,13 +61,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r ./requirements.txt
           pip install -i https://pypi.douban.com/simple/ pyinstaller
-          echo APP_URL=$APP_URL > .env
-          echo HZZ_URL=$HZZ_URL >> .env
-          echo AIDOUER_URL=$AIDOUER_URL >> .env
-          pyinstaller -F -w movie.py
-          echo "cat .env"
-          cat .env
-          rm -rf .env
+          make build APP_URL="$APP_URL" AIDOUER_URL="$AIDOUER_URL" HZZ_URL="$HZZ_URL"
       - name: Upload Release
         id: upload_release_asset
         uses: actions/upload-release-asset@v1.0.1
@@ -93,13 +86,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r ./requirements.txt
           pip install -i https://pypi.douban.com/simple/ pyinstaller
-          echo APP_URL=$APP_URL > .env
-          echo HZZ_URL=$HZZ_URL >> .env
-          echo AIDOUER_URL=$AIDOUER_URL >> .env
-          pyinstaller -F -w movie.py
-          echo "cat .env"
-          cat .env
-          rm -rf .env
+          make build APP_URL="$APP_URL" AIDOUER_URL="$AIDOUER_URL" HZZ_URL="$HZZ_URL"
       - name: Upload Release
         id: upload_release_asset
         uses: actions/upload-release-asset@v1.0.1
