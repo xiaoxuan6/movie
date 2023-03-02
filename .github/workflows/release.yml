@@ -28,12 +28,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r ./requirements.txt
           pip install -i https://pypi.douban.com/simple/ pyinstaller
-          make put APP_URL="${{ env.APP_URL }}" AIDOUER_URL="${{ env.AIDOUER_URL }}" HZZ_URL="${{ env.HZZ_URL }}"
-          echo "cat .env"
-          cat .env
           make put APP_URL="$env:APP_URL" AIDOUER_URL="$env:AIDOUER_URL" HZZ_URL="$env:HZZ_URL"
-          echo "cat .env"
-          cat .env
           pyinstaller -F -w movie.py
       - name: Create Release
         id: create_release

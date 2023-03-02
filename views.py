@@ -1,4 +1,3 @@
-import os
 import tkinter as tk
 import webbrowser
 from tkinter import messagebox
@@ -25,7 +24,8 @@ class VipFrame(tk.Frame):
             messagebox.showerror(title='错误', message='无效的链接地址')
             self.vip_url.set('')
         else:
-            webbrowser.open(os.environ.get('AIDOUER_URL') + self.vip_url.get())
+            base_url = 'https://AIDOUER_URL'
+            webbrowser.open(base_url + self.vip_url.get())
             self.root.quit()
 
 
@@ -46,11 +46,6 @@ class AllFrame(tk.Frame):
 
     def handle(self):
         import endpoint
-
-        messagebox.showerror(title='错误', message=os.environ.get("APP_URL"))
-
-        with open('.env', mode='r', encoding='utf-8') as f:
-            messagebox.showerror(title='错误', message=f.read())
 
         keyword = self.keyword.get()
         if not keyword:
@@ -87,7 +82,8 @@ class MoreFrame(tk.Frame):
         import json
 
         try:
-            url = os.environ.get('APP_URL')
+            url = 'https://APP_URL'
+
             content = requests.get(url).text
             items = json.loads(content.replace('var dh_data = ', ''))[6]['item']
 

@@ -1,14 +1,10 @@
 import tkinter as tk
 
-from dotenv import find_dotenv, load_dotenv
-
 from views import AllFrame, MoreFrame, VipFrame, AbortFrame
 
 
 class Movie:
     def __init__(self, master: tk.Tk):
-        load_dotenv(find_dotenv())
-
         self.root = master
         self.vip_frame = VipFrame(self.root)
         self.all_frame = AllFrame(self.root)
